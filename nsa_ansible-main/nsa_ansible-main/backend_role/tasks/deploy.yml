@@ -1,0 +1,93 @@
+- name: Install Git on the server
+  apt:
+      name: git
+      state: present
+
+- name: Install Openssh-client on the server
+  apt:
+      name: openssh-client
+      state: present
+
+
+
+- name: Download Backend app  job artifact from Gitlad using gitlab API
+  get_url:
+    url: https://gitlab.com/api/v4/projects/{{ project_id }}/jobs/{{ job_id }}/artifacts
+    headers:
+      PRIVATE-TOKEN: "{{ gitlab_private_token }}"
+    dest: /var/www/html/artifact.zip
+
+
+- name: Unzip Artifact ( artifact.zip )
+  unarchive:
+    src: /var/www/html/artifact.zip
+    dest: /var/www/html/
+    remote_src: yes
+
+- name: Create myapp directory
+  file:
+    path: /var/www/html/myapp/
+    state: directory
+    mode: 0777
+  when: myapp is not defined
+
+
+- name: Unzip myapp.zip
+  unarchive:
+    src: /var/www/html/myapp.zip
+    dest: /var/www/html/myapp/
+    remote_src: yes  
+
+- name: Copy .env.example   to .env
+  template:
+        src: templates/.env.example.j2
+        dest: /var/www/html/myapp/.env      
+    
+
+- name: Run composer update
+  command: composer update --no-interaction
+  args:
+    chdir: /var/www/html/myapp/
+
+
+
+- name: Generate Laravel encryption key
+  command: php artisan key:generate 
+  args:
+    chdir:  /var/www/html/myapp/ 
+
+
+
+- name: Datebase migration 
+  command: php artisan migrate
+  args:
+    chdir:  /var/www/html/myapp/     
+
+
+- name: Run config:cahe
+  command: php artisan config:cache
+  args:
+    chdir: /var/www/html/myapp/  
+
+
+- name: Copy Nginx configuration file
+  template:
+        src: nginx.conf.j2
+        dest: /etc/nginx/sites-available/backend
+
+        
+- name: Create a symlink to sites-enabled
+  file:
+        src: /etc/nginx/sites-available/backend
+        dest: /etc/nginx/sites-enabled/backend
+        state: link
+
+        
+        
+- name: Restart Nginx
+  service:
+        name: nginx
+        state: restarted
+
+
+       

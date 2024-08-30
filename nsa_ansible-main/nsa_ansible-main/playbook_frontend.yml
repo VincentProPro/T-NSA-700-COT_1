@@ -1,0 +1,9 @@
+---
+- name: Projet_NSA_frontend
+  hosts: frontend-server
+  remote_user: intelligencia
+
+  tasks:
+    - name: Role call
+      include_role:
+        name: frontend_role

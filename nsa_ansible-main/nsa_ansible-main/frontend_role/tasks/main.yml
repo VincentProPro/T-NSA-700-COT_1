@@ -1,0 +1,9 @@
+---
+# tasks file for frontend_role
+- name: Installing services
+  become : true
+  import_tasks: services.yml 
+
+- name: Deployment on the frontend server
+  become : true
+  import_tasks: deploy.yml  

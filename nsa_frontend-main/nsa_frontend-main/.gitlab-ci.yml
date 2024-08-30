@@ -1,0 +1,44 @@
+image: node:12.22.12
+
+stages:
+  - build
+  - test
+  
+
+before_script:
+
+  - npm install -g @angular/cli@7.1.4
+  - npm install
+  - npm rebuild node-sass
+
+
+build:
+  stage: build
+  script:
+    - ng build --prod
+  artifacts:
+    paths:
+      - dist/
+
+
+    
+
+test:
+  image: markhobson/node-chrome:latest
+  stage: test
+  script:
+    - npm link @angular/cli@7.1.4
+    - npm test -- --browsers=ChromeHeadless --watch=false
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - node_modules
+    policy: pull
+
+
+cache:
+  paths:
+    - node_modules/
+

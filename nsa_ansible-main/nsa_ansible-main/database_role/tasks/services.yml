@@ -1,0 +1,80 @@
+
+- name: Copy apt repository file 
+  template:
+      src: "templates/mysql.list.j2"
+      dest: /etc/apt/sources.list.d/mysql.list
+
+- name: configure package installation ... root password
+  debconf:
+      name: mysql-community-server
+      question: mysql-community-server/root-pass
+      value: "{{ root_password }}"
+      vtype: password
+
+- name: Configure package installation ... confirm root password
+  debconf:
+      name: mysql-community-server
+      question: mysql-community-server/re-root-pass
+      value: "{{ root_password }}"
+      vtype: password
+
+- name: Configure package installation ... authentication method
+  debconf:
+      name: mysql-community-server
+      question: mysql-server/default-auth-override
+      value: Use Strong Password Encryption (RECOMMENDED)
+      vtype: select
+
+- name: install mysql and use default input
+  apt:
+      name: mysql-server
+      update_cache: yes
+  environment:
+      DEBIAN_FRONTEND: noninteractive
+
+- name: Create a database
+  mysql_db:
+      login_password: "{{root_password}}"
+      name: nsa_db
+      state: present
+      collation: utf8_general_ci
+      encoding: utf8
+
+
+
+- name: Create mysql user nsa_user with password 
+  mysql_user: 
+    login_password: "{{root_password}}"
+    name: nsa_user 
+    password: "{{nsa_password}}"
+    priv: nsa_db.*:ALL
+    host: "%"
+
+
+
+
+
+
+
+
+  
+
+
+
+
+   
+
+
+
+ 
+
+
+
+
+
+
+  
+
+
+      
+

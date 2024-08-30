@@ -1,0 +1,9 @@
+---
+- name: Projet_NSA_Database
+  hosts: database-server
+  remote_user: intelligencia
+
+  tasks:
+    - name: Role call
+      include_role:
+        name: database_role

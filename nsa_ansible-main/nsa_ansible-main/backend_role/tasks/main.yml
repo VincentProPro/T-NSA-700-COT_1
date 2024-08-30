@@ -1,0 +1,11 @@
+---
+# tasks file for role1
+
+# tasks file for mesroles
+- name: Installing services
+  become : true
+  import_tasks: service.yml
+
+- name: Deployment backend from  gitlab
+  become : true
+  import_tasks: deploy.yml  

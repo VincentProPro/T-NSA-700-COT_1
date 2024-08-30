@@ -1,0 +1,10 @@
+---
+- name: Projet_NSA_Backend
+  hosts: backend-server
+  remote_user: intelligencia
+
+  tasks:
+    - name:  call backend_role
+      include_role:
+        name: backend_role
+ 

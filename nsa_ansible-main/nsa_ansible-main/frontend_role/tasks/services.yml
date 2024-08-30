@@ -1,0 +1,40 @@
+    
+    - name: Update server apt cache
+      apt: 
+        update_cache: yes
+        
+    
+    - name: Install Nginx on the server
+      apt:
+        name: nginx
+        state: latest
+
+
+
+    - name: Install required extensions  on the server
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - php-curl
+        - zip 
+        - unzip
+
+        
+
+    - name: Install nodejs 12 on the server
+      apt:
+        name: nodejs
+        
+  
+    - name: Install npm on the server
+      apt:
+        name: npm
+        state: latest 
+
+
+
+    - name:  Install angular/cli@7.1.4  on the server
+      command:   npm install -g @angular/cli@7.1.4
+ 
+      

@@ -1,0 +1,5 @@
+---
+# tasks file for database_role
+- name: Installing services
+  become : true 
+  import_tasks: services.yml

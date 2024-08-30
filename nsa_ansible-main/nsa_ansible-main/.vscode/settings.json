@@ -1,0 +1,6 @@
+{
+    "yaml.schemas": {
+        "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json": "file:///home/intelligencia/Bureau/nsa_ansible/backend_role/tasks/deploy.yml",
+        "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/tasks": "file:///home/intelligencia/Bureau/nsa_ansible/database_role/tasks/services.yml"
+    }
+}

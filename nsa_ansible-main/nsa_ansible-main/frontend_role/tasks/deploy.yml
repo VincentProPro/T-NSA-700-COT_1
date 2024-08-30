@@ -1,0 +1,38 @@
+- name: Download frontend application  job artifact from gitlab using Gitlab API
+  get_url:
+    url: https://gitlab.com/api/v4/projects/{{ project_id }}/jobs/{{ job_id }}/artifacts
+    headers:
+      PRIVATE-TOKEN: "{{ gitlab_private_token }}"
+    dest: /var/www/html/artifact.zip
+  
+
+- name: Unzip Artifact (artifact.zip)
+  unarchive:
+    src: /var/www/html/artifact.zip
+    dest: /var/www/html/
+    remote_src: yes
+
+
+
+
+
+- name: Copy Nginx configuration file
+  template:
+        src: nginx.conf.j2
+        dest: /etc/nginx/sites-available/front
+         
+
+        
+- name: Create a symlink to sites-enabled
+  file:
+        src: /etc/nginx/sites-available/front
+        dest: /etc/nginx/sites-enabled/front
+        state: link
+
+        
+        
+- name: Restart Nginx
+  service:
+        name: nginx
+        state: restarted   
+
